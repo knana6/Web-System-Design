@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>사용자 등록 신청서</h1>
+    <form action="submit_registration">
+    <fieldset>
+        <legend>기본정보(essential)</legend>
+        <br>
+        <label for="text">아이디:</label>
+        <input type="text" id="text" name="text" required placeholder="4~12자 영문/숫자">
+        <br><br>
+        <label for="password">비밀번호:</label>
+        <input type="password" id="pwd" name="pwd" required>
+        <br><br>
+        <label for="email">이메일:</label>
+        <input type="email" id="email" name="email" required>
+        <br><br>
+    </fieldset>
+    <br>
+    <fieldset>
+        <legend>부가 정보(optional)</legend>
+        <br>
+        <label for="phone">연락처:</label>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" placeholder="010-1234-5678">
+        <br>
+        <p>관심분야:</p>
+        <input type="checkbox" id="option1" name="option1" value="option1">
+        <label for="option1">HTML5</label>
+
+        <input type="checkbox" id="option2" name="option2" value="option2">
+        <label for="option2">CSS3</label>
+
+        <input type="checkbox" id="option3" name="option3" value="option3">
+        <label for="option3">Javascript</label>
+        <br><br>
+        <label for="volume">숙련도:</label>
+        <br>
+        <input type="range" id="volume" name="volume" min="0" max="5" step="1">
+    </fieldset>
+    <br>
+    <input type="submit" value="가입 신청">
+    <input type="reset" value="초기화">
+    </form>
+</body>
+<footer>
+    <br>
+    <a href="index.html">홈으로</a>
+    <p> ⓒ 2026. Web Programming Course. All rights reserved.</p>
+</footer>
+
+</html>
