@@ -1,0 +1,42 @@
+#top_header{
+    background-color: #f8f8f8;
+}
+#title {}
+.a{
+    justify-content: space-between;
+}
+#navi {
+    background-color: yellowgreen;
+    list-style-type: none;
+    display: flex; 
+    margin: 10px;
+    padding: 10px;
+    gap: 200px;
+    justify-content: right;
+}
+#navi ul {
+    display: none;
+    position: absolute;
+    list-style-type: none;
+}
+
+#login {
+    background-color: aliceblue;
+}
+#ad {
+    background-color: aliceblue;
+}
+#ad article{}
+#ad article{} .sookmyung {}
+#ad article{} .shop{}
+
+#post {}
+#post .card{}
+#post .card h3{}
+#post .card figure{}
+#post .card p{}
+
+#foot {
+    background-color: #f8f8f8;
+}
+#foot ul{}
