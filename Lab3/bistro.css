@@ -1,9 +1,13 @@
 #top_header{
     background-color: #f8f8f8;
+    width: 100%;
+    display: flex; 
+    box-sizing: border-box;
 }
-#title {}
 .a{
+    display: flex;
     justify-content: space-between;
+    margin-top: auto;
 }
 #navi {
     background-color: yellowgreen;
@@ -11,32 +15,79 @@
     display: flex; 
     margin: 10px;
     padding: 10px;
-    gap: 200px;
-    justify-content: right;
+    gap: 10px;
+    justify-content: flex-end;
 }
 #navi ul {
     display: none;
     position: absolute;
     list-style-type: none;
+    top: 100%;
 }
-
+#navi > li:hover > ul {
+    display: block;
+}
+body {
+    margin: 0;
+    display: flex;         
+    flex-wrap: wrap;   
+    align-items: flex-start;     
+}
+#login, #post, #ad{
+    padding: 10px;
+    box-sizing: border-box;
+}
 #login {
     background-color: aliceblue;
+    width: 20%;
+}
+#login input {
+    margin-top: 8px;
+    width: 48%;
 }
 #ad {
     background-color: aliceblue;
+    width: 20%;
+    padding:10px;
 }
-#ad article{}
-#ad article{} .sookmyung {}
-#ad article{} .shop{}
 
-#post {}
+
+
+#post {
+     width: 60%;
+     padding:10px;
+}
+
 #post .card{}
 #post .card h3{}
-#post .card figure{}
-#post .card p{}
-
-#foot {
-    background-color: #f8f8f8;
+#post .card figure {
+    float: left;
+    margin: 0 15px 0 0;
 }
-#foot ul{}
+
+#post .card figure img {
+    width: 120px;
+}
+
+#post .card p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+#footer {
+    background-color: #f8f8f8;
+    width: 100%;
+    box-sizing: border-box;
+}
+#foot ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+#foot ul li a {
+    text-decoration: none;
+    color: #333;
+}
