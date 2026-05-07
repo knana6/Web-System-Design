@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BOM location 데모</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+        }
+
+        code {
+            background: #f0f0f0;
+            padding: 0.2rem 0.4rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>BOM location 데모</h1>
+    <p>콘솔(F12)을 열고 다음 명령을 입력해보세요:</p>
+    <ul>
+        <li><code>location.href</code></li>
+        <li><code>location.pathname</code></li>
+        <li><code>location.search</code></li>
+        <li><code>location.host</code></li>
+    </ul>
+    <p>이 페이지는 <code>?id=42&amp;category=js</code> 쿼리스트링으로 열려 있습니다.</p>
+
+    <script>
+        // 콘솔에 자동 출력 (학생이 콘솔 못 열어도 화면에서 확인 가능)
+        console.log('location.href     →', location.href);
+        console.log('location.pathname →', location.pathname);
+        console.log('location.search   →', location.search);
+        console.log('location.host     →', location.host);
+
+        // search 분해 보너스
+        const params = new URLSearchParams(location.search);
+        console.log('id      →', params.get('id'));
+        console.log('category →', params.get('category'));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>이벤트 위임 데모</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        input {
+            padding: 0.5rem;
+            width: 60%;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+        }
+
+        ul {
+            margin-top: 1rem;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        li {
+            padding: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+        }
+
+        .delete-btn {
+            background: #ff5252;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>오늘 할 일</h1>
+    <input type="text" id="taskInput" placeholder="할 일을 입력하세요">
+    <button id="addBtn">추가</button>
+    <ul id="taskList"></ul>
+
+    <script>
+        const input = document.querySelector('#taskInput');
+        const addBtn = document.querySelector('#addBtn');
+        const list = document.querySelector('#taskList');
+
+        addBtn.addEventListener('click', () => {
+            const text = input.value;
+            if (!text) return;
+
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${text}</span><button class="delete-btn">삭제</button>`;
+            list.appendChild(li);
+            input.value = '';
+        });
+
+        // 라이브 코딩: 여기에 이벤트 위임 작성
+        // 힌트: list에 click 리스너 1개로 모든 li의 삭제 버튼 처리
+        list.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                const li = e.target.closest('li');
+                if (li) {
+                    list.removeChild(li);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

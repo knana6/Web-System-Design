@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>카운트다운 타이머</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        #display {
+            font-size: 4rem;
+            margin: 2rem;
+            color: #333;
+        }
+
+        button {
+            padding: 0.7rem 1.5rem;
+            margin: 0.3rem;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>30초 카운트다운</h1>
+    <div id="display">30</div>
+    <button id="startBtn">시작</button>
+    <button id="stopBtn">정지</button>
+
+    <script>
+        const display = document.querySelector('#display');
+        const startBtn = document.querySelector('#startBtn');
+        const stopBtn = document.querySelector('#stopBtn');
+
+        let timerId = null;
+        let count = 30;
+
+        startBtn.addEventListener('click', () => {
+            if (timerId) return; // 중복 방지
+            timerId = setInterval(() => {
+                count--;
+                display.textContent = count;
+                if (count <= 0) {
+                    clearInterval(timerId);
+                    timerId = null;
+                    display.textContent = '끝!';
+                }
+            }, 1000);
+        });
+
+        stopBtn.addEventListener('click', () => {
+            clearInterval(timerId);
+            timerId = null;
+        });
+    </script>
+</body>
+
+</html>

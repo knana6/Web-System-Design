@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DOM 기초 — 목록에 추가하기</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        input {
+            padding: 0.5rem;
+            width: 60%;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+        }
+
+        ul {
+            margin-top: 1rem;
+        }
+
+        li {
+            padding: 0.3rem 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>오늘 할 일</h1>
+    <input type="text" id="taskInput" placeholder="할 일을 입력하세요">
+    <button id="addBtn">추가</button>
+    <ul id="taskList">
+        <!-- 여기에 li가 추가됨 -->
+    </ul>
+
+    <script>
+        // 라이브 코딩: 여기에 querySelector + createElement + appendChild 작성
+            const taskInput = document.querySelector('#taskInput');
+            const addBtn = document.querySelector('#addBtn');
+            const taskList = document.querySelector('#taskList');
+    
+            addBtn.addEventListener('click', () => {
+                const taskText = taskInput.value.trim();
+                if (taskText) {
+                    const li = document.createElement('li');
+                    li.textContent = taskText;
+                    taskList.appendChild(li);
+                    taskInput.value = '';
+                }
+            });
+    </script>
+</body>
+
+</html>

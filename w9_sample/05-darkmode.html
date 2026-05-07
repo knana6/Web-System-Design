@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>다크모드 + localStorage</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>안녕, 세상</h1>
+    <p>다크모드 토글 버튼을 만들어봅시다.</p>
+    <button id="toggleBtn">다크모드 토글</button>
+
+    <script>
+        const toggleBtn = document.querySelector('#toggleBtn');
+
+        // 라이브 코딩 1: 페이지 로드 시 저장된 설정 복원
+
+        // 라이브 코딩 2: 토글 버튼 클릭 시 dark 클래스 + localStorage 저장
+    </script>
+</body>
+
+</html>
