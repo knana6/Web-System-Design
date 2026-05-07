@@ -90,15 +90,73 @@
         // 데이터 모델: [{ id, name, url, starred }, ...]
         let bookmarks = [];
 
-        // TODO 1: 페이지 로드 시 localStorage에서 bookmarks 배열 복원 + 렌더링
-        //         힌트: JSON.parse, render() 호출
+        // localStorage에 저장된 북마크 데이터를 불러와 bookmarks에 저장
+        bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        if (typeof render === 'function') render();
 
-        // TODO 2: render() — bookmarks 배열을 화면에 그리기
-        //         힌트: list.innerHTML = bookmarks.map(b => `<li data-id="${b.id}">...</li>`).join('')
+        // bookmarks 배열을 HTML 목록으로 변환해 화면에 출력
+        function render() {
+            // 즐겨찾기한 북마크가 목록 위쪽에 먼저 보이도록 정렬
+            const sortedBookmarks = [...bookmarks].sort((a, b) => b.starred - a.starred);
 
-        // TODO 3: 추가 버튼 — 이름+URL 받아서 bookmarks에 추가 + 저장 + 렌더링
+            list.innerHTML = sortedBookmarks.map(b => `
+                <li data-id="${b.id}">
+                    <span class="star ${b.starred ? 'active' : ''}">★</span>
+                    <span class="name">${b.name}</span>
+                    <button class="delete-btn">삭제</button>
+                </li>
+            `).join('');
+        }
 
-        // TODO 4: 이벤트 위임 — list에 click 1개로 별표 토글 / 삭제 / 사이트명 클릭 시 window.open
+        // 추가 버튼 클릭 시 입력값을 북마크 목록에 저장하고 화면을 갱신
+        addBtn.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            const url = urlInput.value.trim();
+
+            if (!name || !url) return;
+
+            // URL이 http:// 또는 https://로 시작하지 않으면 다시 입력하도록 안내
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                alert('다시 입력하세요.');
+                return;
+            }
+
+            bookmarks.push({
+                id: Date.now(),
+                name,
+                url,
+                starred: false
+            });
+
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            nameInput.value = '';
+            urlInput.value = '';
+            render();
+        });
+
+        // 목록 클릭 이벤트 하나로 별표 토글, 삭제, 사이트 열기를 처리
+        list.addEventListener('click', e => {
+            const li = e.target.closest('li');
+            if (!li) return;
+
+            const id = Number(li.dataset.id);
+            const bookmark = bookmarks.find(b => b.id === id);
+            if (!bookmark) return;
+
+            if (e.target.classList.contains('star')) {
+                bookmark.starred = !bookmark.starred;
+            } else if (e.target.classList.contains('delete-btn')) {
+                bookmarks = bookmarks.filter(b => b.id !== id);
+            } else if (e.target.classList.contains('name')) {
+                window.open(bookmark.url, '_blank');
+                return;
+            } else {
+                return;
+            }
+
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            render();
+        });
     </script>
 </body>
 
