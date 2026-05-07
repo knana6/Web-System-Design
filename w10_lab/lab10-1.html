@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>글자 수 카운터</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .count {
+            color: #666;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .count.over-limit {
+            color: red;
+        }
+
+        button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>나의 메모</h1>
+    <textarea id="memoText" placeholder="여기에 글을 쓰세요..."></textarea>
+    <div class="count">
+        글자: <span id="charCount">0</span> · 단어: <span id="wordCount">0</span>
+    </div>
+    <button id="clearBtn" type="button">지우기</button>
+
+    <script>
+        const textarea = document.querySelector('#memoText');
+        const countEl = document.querySelector('.count');
+        const charEl = document.querySelector('#charCount');
+        const wordEl = document.querySelector('#wordCount');
+        const clearBtn = document.querySelector('#clearBtn');
+
+        function updateCount(text) {
+            charEl.textContent = text.length;
+            wordEl.textContent = text.trim().split(/\s+/).filter(w => w).length;
+            // 글자 수가 200 이상이면 글자/단어 수를 빨간색으로 표시
+            countEl.classList.toggle('over-limit', text.length >= 200);
+        }
+
+        // 페이지를 열 때 이전에 저장한 메모를 불러옴
+        const savedMemo = localStorage.getItem('memo');
+        if (savedMemo !== null) {
+            textarea.value = savedMemo;
+            // 복원된 내용에 맞게 글자 수와 단어 수를 처음부터 표시
+            updateCount(savedMemo);
+        }
+
+        textarea.addEventListener('input', () => {
+            const text = textarea.value;
+            updateCount(text);
+            // 입력할 때마다 localStorage에 자동 저장
+            localStorage.setItem('memo', text);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            // 지우기 버튼을 누르면 화면과 저장된 메모를 모두 초기화
+            textarea.value = '';
+            updateCount('');
+            localStorage.removeItem('memo');
+        });
+    </script>
+</body>
+
+</html>
