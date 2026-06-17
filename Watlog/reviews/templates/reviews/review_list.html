@@ -98,29 +98,9 @@
     }
 </style>
 
-<!-- 상단 통계 -->
+<!-- 상단 타이틀 -->
 <div class="text-center mb-5">
-    <h1 class="mb-4" style="font-size: 3rem; font-weight: bold;">🍿Movie Archive🍿</h1>
-    <div class="row justify-content-center">
-        <div class="col-md-2 mb-3">
-            <div class="stats-box">
-                <div class="stats-number" id="totalCount">{{ total_count }}</div>
-                <div class="stats-label">Total</div>
-            </div>
-        </div>
-        <div class="col-md-2 mb-3">
-            <div class="stats-box">
-                <div class="stats-number">{{ tmdb_movies|length }}</div>
-                <div class="stats-label">TMDB</div>
-            </div>
-        </div>
-        <div class="col-md-2 mb-3">
-            <div class="stats-box">
-                <div class="stats-number">{{ reviews.paginator.count }}</div>
-                <div class="stats-label">My</div>
-            </div>
-        </div>
-    </div>
+    <h1 class="mb-4" style="font-size: 3rem; font-weight: bold;">Watlog</h1>
 </div>
 
 <!-- 검색 바 -->
@@ -217,78 +197,113 @@
     </div>
 </div>
 
+<!-- JS 페이지네이션 컨트롤 -->
+<div class="d-flex justify-content-center align-items-center mt-4 mb-5" id="paginationControls"></div>
+
 <script>
-// 필터 & 정렬 기능
+const PAGE_SIZE = 24;
 let currentFilter = 'all';
 let currentSort = 'latest';
+let currentPage = 1;
+let filteredSorted = [];
 
-// 필터 버튼
 document.querySelectorAll('[data-filter]').forEach(btn => {
     btn.addEventListener('click', function() {
-        // 활성화 상태 변경
         document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        
         currentFilter = this.dataset.filter;
-        applyFilterAndSort();
+        currentPage = 1;
+        render();
     });
 });
 
-// 정렬 버튼
 document.querySelectorAll('[data-sort]').forEach(btn => {
     btn.addEventListener('click', function() {
-        // 활성화 상태 변경
         document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        
         currentSort = this.dataset.sort;
-        applyFilterAndSort();
+        currentPage = 1;
+        render();
     });
 });
 
-function applyFilterAndSort() {
-    const container = document.getElementById('movieContainer');
-    const items = Array.from(document.querySelectorAll('.movie-item'));
-    
-    // 1. 필터링
-    items.forEach(item => {
-        const type = item.dataset.type;
-        if (currentFilter === 'all' || currentFilter === type) {
-            item.classList.remove('hidden');
-        } else {
-            item.classList.add('hidden');
-        }
-    });
-    
+function render() {
+    const allItems = Array.from(document.querySelectorAll('.movie-item'));
+
+    // 1. 필터
+    filteredSorted = allItems.filter(item =>
+        currentFilter === 'all' || item.dataset.type === currentFilter
+    );
+
     // 2. 정렬
-    const visibleItems = items.filter(item => !item.classList.contains('hidden'));
-    
-    visibleItems.sort((a, b) => {
-        switch(currentSort) {
-            case 'rating':
-                return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
-            case 'title':
-                return a.dataset.title.localeCompare(b.dataset.title);
-            case 'year':
-                return parseInt(b.dataset.year) - parseInt(a.dataset.year);
-            case 'latest':
+    filteredSorted.sort((a, b) => {
+        switch (currentSort) {
+            case 'rating': return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+            case 'title':  return a.dataset.title.localeCompare(b.dataset.title);
+            case 'year':   return parseInt(b.dataset.year) - parseInt(a.dataset.year);
             default:
-                // TMDB는 위에, 내 리뷰는 아래
                 if (a.dataset.type === 'tmdb' && b.dataset.type === 'my') return -1;
-                if (a.dataset.type === 'my' && b.dataset.type === 'tmdb') return 1;
+                if (a.dataset.type === 'my'   && b.dataset.type === 'tmdb') return 1;
                 return 0;
         }
     });
-    
-    // 3. 재배치
-    visibleItems.forEach(item => container.appendChild(item));
-    
-    // 4. 통계 업데이트
-    updateStats(visibleItems.length);
+
+    // 3. DOM 재배치 + 페이지 슬라이스
+    const container = document.getElementById('movieContainer');
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end   = start + PAGE_SIZE;
+
+    filteredSorted.forEach((item, i) => {
+        container.appendChild(item);
+        item.style.display = (i >= start && i < end) ? '' : 'none';
+    });
+
+    // 4. 페이지네이션 버튼 렌더
+    renderPagination();
 }
 
-function updateStats(count) {
-    document.getElementById('totalCount').textContent = count;
+function renderPagination() {
+    const totalPages = Math.ceil(filteredSorted.length / PAGE_SIZE);
+    const ctrl = document.getElementById('paginationControls');
+    ctrl.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    const ul = document.createElement('ul');
+    ul.className = 'pagination';
+
+    // 이전
+    const prevLi = document.createElement('li');
+    prevLi.className = 'page-item' + (currentPage === 1 ? ' disabled' : '');
+    prevLi.innerHTML = `<a class="page-link" href="#" style="background:#1a1a1a;border-color:#00ff00;color:#00ff00;">‹ 이전</a>`;
+    prevLi.addEventListener('click', e => { e.preventDefault(); if (currentPage > 1) { currentPage--; render(); window.scrollTo(0,0); } });
+    ul.appendChild(prevLi);
+
+    // 페이지 번호 (최대 7개 표시)
+    let startP = Math.max(1, currentPage - 3);
+    let endP   = Math.min(totalPages, startP + 6);
+    if (endP - startP < 6) startP = Math.max(1, endP - 6);
+
+    for (let n = startP; n <= endP; n++) {
+        const li = document.createElement('li');
+        li.className = 'page-item' + (n === currentPage ? ' active' : '');
+        const active = n === currentPage;
+        li.innerHTML = `<a class="page-link" href="#" style="${active ? 'background:#00ff00;border-color:#00ff00;color:#000;' : 'background:#1a1a1a;border-color:#333;color:#fff;'}">${n}</a>`;
+        const pageNum = n;
+        li.addEventListener('click', e => { e.preventDefault(); currentPage = pageNum; render(); window.scrollTo(0,0); });
+        ul.appendChild(li);
+    }
+
+    // 다음
+    const nextLi = document.createElement('li');
+    nextLi.className = 'page-item' + (currentPage === totalPages ? ' disabled' : '');
+    nextLi.innerHTML = `<a class="page-link" href="#" style="background:#1a1a1a;border-color:#00ff00;color:#00ff00;">다음 ›</a>`;
+    nextLi.addEventListener('click', e => { e.preventDefault(); if (currentPage < totalPages) { currentPage++; render(); window.scrollTo(0,0); } });
+    ul.appendChild(nextLi);
+
+    ctrl.appendChild(ul);
 }
+
+// 초기 렌더
+render();
 </script>
 {% endblock %}

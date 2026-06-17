@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ review.title }} - myMovieReviews{% endblock %}
+{% block title %}{{ review.title }} - Watlog{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -70,6 +70,12 @@
                     <div style="background-color: #000; border: 1px solid #333; border-radius: 10px; padding: 20px;">
                         <p style="color: #fff; white-space: pre-wrap; line-height: 1.8; margin: 0;">{{ review.review_content }}</p>
                     </div>
+                </div>
+
+                <!-- 감상 날짜 -->
+                <div class="mb-4">
+                    <label style="color: #00ff00; font-weight: bold; display: block; margin-bottom: 5px;">감상 날짜</label>
+                    <p style="color: #fff; font-size: 1.1rem;">{{ review.created_at|date:"Y년 m월 d일" }}</p>
                 </div>
 
                 <hr style="border-color: #00ff00;" class="mt-4 mb-4">

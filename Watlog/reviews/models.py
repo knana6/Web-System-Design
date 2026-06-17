@@ -16,7 +16,6 @@ class Review(models.Model):
     
     # 사용자가 직접 업로드하는 이미지
     poster_image = models.ImageField(upload_to='posters/', null=True, blank=True, verbose_name='포스터 이미지')
-
     def __str__(self):
         return self.title
 

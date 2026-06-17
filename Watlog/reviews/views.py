@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .models import Review
 from .services.tmdb_service import TMDBService
@@ -10,28 +9,20 @@ tmdb = TMDBService()
 chatbot = ChatbotService()
 
 def review_list(request):
-    # 정렬 파라미터
-    sort = request.GET.get('sort', '-created_at')
-    
-    reviews = Review.objects.all().order_by(sort)
-    
-    # 페이지네이션
-    paginator = Paginator(reviews, 100)  # 많이 보여주기
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-    
-    # TMDB 인기 영화 가져오기
-    tmdb_movies = tmdb.get_popular_movies()
-    tmdb_results = tmdb_movies.get('results', []) if tmdb_movies else []
-    
-    # 총 개수 계산
-    total_count = len(tmdb_results) + reviews.count()
-    
+    reviews = Review.objects.all().order_by('-created_at')
+
+    # TMDB 인기 영화 최대 200개 (10페이지 × 20개)
+    tmdb_results = []
+    for page in range(1, 11):
+        data = tmdb.get_popular_movies(page=page)
+        if data:
+            tmdb_results.extend(data.get('results', []))
+        else:
+            break
+
     context = {
-        'reviews': page_obj,
+        'reviews': reviews,
         'tmdb_movies': tmdb_results,
-        'page_obj': page_obj,
-        'total_count': total_count,
     }
     return render(request, 'reviews/review_list.html', context)
 
@@ -67,7 +58,7 @@ def review_create(request):
             review_content=request.POST['review_content'],
             tmdb_id=int(tmdb_id) if tmdb_id else None,
             poster_path=poster_path if poster_path else None,
-            poster_image=poster_image if poster_image else None,  # 이미지 저장
+            poster_image=poster_image if poster_image else None,
         )
         return redirect('reviews:review_list')
     
@@ -85,7 +76,7 @@ def review_update(request, pk):
         review.main_actor = request.POST['main_actor']
         review.runtime = request.POST['runtime']
         review.review_content = request.POST['review_content']
-        
+
         # 새 이미지가 업로드되었다면 교체
         poster_image = request.FILES.get('poster_image')
         if poster_image:
