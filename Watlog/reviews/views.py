@@ -124,7 +124,7 @@ def search_movies(request):
         tmdb_results = tmdb.search_movies(query)
         movie_list = tmdb_results.get('results', []) if tmdb_results else []
 
-        # TMDB 인물 검색 (감독·배우 이름 검색 보완)
+        # TMDB 인물 검색 (감독, 배우 이름 검색 보완)
         seen_ids = {m['id'] for m in movie_list}
         person_results = tmdb.search_person(query)
         if person_results:
