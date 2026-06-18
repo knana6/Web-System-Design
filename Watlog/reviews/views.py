@@ -120,13 +120,24 @@ def search_movies(request):
             main_actor__icontains=query
         )
         
-        # TMDB에서 검색
+        # TMDB 제목 검색
         tmdb_results = tmdb.search_movies(query)
-        
+        movie_list = tmdb_results.get('results', []) if tmdb_results else []
+
+        # TMDB 인물 검색 (감독·배우 이름 검색 보완)
+        seen_ids = {m['id'] for m in movie_list}
+        person_results = tmdb.search_person(query)
+        if person_results:
+            for person in person_results.get('results', [])[:3]:
+                for movie in person.get('known_for', []):
+                    if movie.get('media_type') == 'movie' and movie['id'] not in seen_ids:
+                        movie_list.append(movie)
+                        seen_ids.add(movie['id'])
+
         context = {
             'query': query,
             'db_results': db_results,
-            'tmdb_results': tmdb_results.get('results', []) if tmdb_results else [],
+            'tmdb_results': movie_list,
         }
         return render(request, 'reviews/search_results.html', context)
     

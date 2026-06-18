@@ -49,6 +49,19 @@ class TMDBService:
         if response.status_code == 200:
             return response.json()
         return None
+
+    def search_person(self, query):
+        """인물 검색 (감독·배우)"""
+        url = f"{self.BASE_URL}/search/person"
+        params = {
+            'api_key': self.api_key,
+            'language': 'ko-KR',
+            'query': query
+        }
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            return response.json()
+        return None
     
     def get_poster_url(self, poster_path):
         """포스터 이미지 URL 반환"""
