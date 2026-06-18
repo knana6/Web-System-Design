@@ -10,8 +10,10 @@ chatbot = ChatbotService()
 
 def review_list(request):
     reviews = Review.objects.all().order_by('-created_at')
+    reviewed_tmdb_ids = set(
+        reviews.exclude(tmdb_id__isnull=True).values_list('tmdb_id', flat=True)
+    )
 
-    # TMDB 인기 영화 최대 200개 (10페이지 × 20개)
     tmdb_results = []
     for page in range(1, 11):
         data = tmdb.get_popular_movies(page=page)
@@ -19,6 +21,14 @@ def review_list(request):
             tmdb_results.extend(data.get('results', []))
         else:
             break
+
+    seen = set()
+    deduped = []
+    for m in tmdb_results:
+        if m['id'] not in seen and m['id'] not in reviewed_tmdb_ids:
+            seen.add(m['id'])
+            deduped.append(m)
+    tmdb_results = deduped
 
     context = {
         'reviews': reviews,
